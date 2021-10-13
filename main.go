@@ -32,7 +32,6 @@ func main() {
 
 	// loop over each word in array, satisfy conditions
 	for i, word := range words {
-		// fl := string(words[i+1][0])
 		if word == "(up)" {
 			words[i-1] = strings.ToUpper(words[i-1])
 			words = append(words[:i], words[i+1:]...)
@@ -47,12 +46,10 @@ func main() {
 		} else if word == "(bin)" {
 			words[i-1] = BintoInt(words[i-1])
 			words = append(words[:i], words[i+1:]...)
-		} else if word == "a" && (string(words[i+1][0]) == "a") {
-			words[i] = "an"
 		}
 	}
 
-	// removeElement(words)
+	ChangeA(words)
 	fmt.Println(words)
 
 	// man := os.WriteFile(args[1], manipulate, 0644)
@@ -68,22 +65,25 @@ func HextoInt(hex string) string {
 }
 
 // conv binary to int
-
 func BintoInt(bin string) string {
 	number, _ := strconv.ParseInt(bin, 2, 64)
 	return fmt.Sprint(number)
 }
 
-// func checkVowel(a string) bool {
-// 	vowels := []string{"a", "e", "i", "o", "u", "h"}
+func ChangeA(s []string) []string {
+	vowels := []string{"a", "e", "i", "o", "u", "h", ""}
 
-// 	for _, ch := range vowels {
-// 		if a == ch {
-// 			return true
-// 		}
-// 	}
-// 	return false
-// }
+	for i, word := range s {
+		for _, letter := range vowels {
+			if word == "a" && string(s[i+1][0]) == letter {
+				s[i] = "an"
+			} else if word == "A" && string(s[i+1][0]) == letter {
+				s[i] = "An"
+			}
+		}
+	}
+	return s
+}
 
 // func removeElement(a []string) []string {
 // 	keyWords := []string{"(bin)", "(hex)", "(up)"}
@@ -96,5 +96,3 @@ func BintoInt(bin string) string {
 // 	}
 // 	return a
 // }
-
-// fl == "a" || fl == "e" || fl == "i" || fl == "o" || fl == "u" || fl == "h"
