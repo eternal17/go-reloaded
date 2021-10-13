@@ -29,7 +29,6 @@ func main() {
 
 	// array to push the words into
 	words := strings.Split(string(givenText), " ")
-
 	// loop over each word in array, satisfy conditions
 	for i, word := range words {
 		if word == "(up)" {
@@ -46,12 +45,36 @@ func main() {
 		} else if word == "(bin)" {
 			words[i-1] = BintoInt(words[i-1])
 			words = append(words[:i], words[i+1:]...)
+
+			// upper with number
+		} else if strings.Contains(word, "(up,") {
+			b := strings.Trim(string(words[i+1]), ")")
+			number, _ := strconv.Atoi(string(b))
+			for j := 1; j <= number; j++ {
+				words[i-j] = strings.ToUpper(words[i-j])
+				words = append(words[:i], words[i+1:]...)
+			}
+			// lower with number
+		} else if strings.Contains(word, "(low,") {
+			b := strings.Trim(string(words[i+1]), ")")
+			number, _ := strconv.Atoi(string(b))
+			for j := 1; j <= number; j++ {
+				words[i-j] = strings.ToLower(words[i-j])
+				words = append(words[:i], words[i+1:]...)
+			}
+			// capitalize with num
+		} else if strings.Contains(word, "(cap,") {
+			b := strings.Trim(string(words[i+1]), ")")
+			number, _ := strconv.Atoi(string(b))
+			for j := 1; j <= number; j++ {
+				words[i-j] = strings.Title(words[i-j])
+				words = append(words[:i], words[i+1:]...)
+			}
 		}
 	}
-
+	// Times(words)
 	ChangeA(words)
 	fmt.Println(words)
-
 	// man := os.WriteFile(args[1], manipulate, 0644)
 	// if man != nil {
 	// 	log.Fatal(man)
@@ -71,7 +94,7 @@ func BintoInt(bin string) string {
 }
 
 func ChangeA(s []string) []string {
-	vowels := []string{"a", "e", "i", "o", "u", "h", ""}
+	vowels := []string{"a", "e", "i", "o", "u", "h", "A", "E", "I", "O", "U"}
 
 	for i, word := range s {
 		for _, letter := range vowels {
@@ -85,14 +108,27 @@ func ChangeA(s []string) []string {
 	return s
 }
 
-// func removeElement(a []string) []string {
-// 	keyWords := []string{"(bin)", "(hex)", "(up)"}
-// 	for i, word := range a {
-// 		for _, keyword := range keyWords {
+// func Times(s []string) []string {
+// 	keywords := []string{"(up,", "(low,", "(cap,"}
+
+// 	for i, word := range s {
+// 		for _, keyword := range keywords {
 // 			if word == keyword {
-// 				a = append(a[:i], a[i+1:]...)
+// 				a := strings.Trim(s[i+1], ")")
+// 				number, _ := strconv.Atoi(string(a))
+// 				for j := 1; j <= number; j++ {
+// 					if word == "(up," {
+// 						s[i-j] = strings.ToUpper(s[i-j])
+// 						s = append(s[:i], s[i+1:]...)
+// 					} else if word == "(low," {
+// 						s[i-j] = strings.ToLower(s[i-j])
+// 					} else if word == "(cap," {
+// 						s[i-j] = strings.Title(s[i-j])
+// 					}
+
+// 				}
 // 			}
 // 		}
 // 	}
-// 	return a
+// 	return s
 // }
