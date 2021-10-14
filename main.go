@@ -36,6 +36,7 @@ func main() {
 			words = append(words[:i], words[i+1:]...)
 		} else if word == "(low)" {
 			words[i-1] = strings.ToLower(words[i-1])
+			words = append(words[:i], words[i+1:]...)
 		} else if word == "(cap)" {
 			words[i-1] = strings.Title(words[i-1])
 			words = append(words[:i], words[i+1:]...)
@@ -47,32 +48,34 @@ func main() {
 			words = append(words[:i], words[i+1:]...)
 
 			// upper with number
-		} else if strings.Contains(word, "(up,") {
-			b := strings.Trim(string(words[i+1]), ")")
+		} else if word == "(up," {
+			b := strings.Trim(string(words[i+1]), words[i+1][1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
 				words[i-j] = strings.ToUpper(words[i-j])
 				words = append(words[:i], words[i+1:]...)
 			}
 			// lower with number
-		} else if strings.Contains(word, "(low,") {
-			b := strings.Trim(string(words[i+1]), ")")
+		} else if word == "(low," {
+			b := strings.Trim(string(words[i+1]), words[i+1][1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
 				words[i-j] = strings.ToLower(words[i-j])
 				words = append(words[:i], words[i+1:]...)
 			}
 			// capitalize with num
-		} else if strings.Contains(word, "(cap,") {
-			b := strings.Trim(string(words[i+1]), ")")
+		} else if word == "(cap," {
+			b := strings.Trim(string(words[i+1]), words[i+1][1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
 				words[i-j] = strings.Title(words[i-j])
 				words = append(words[:i], words[i+1:]...)
 			}
+			// punctuations
 		}
 	}
-	// Times(words)
+	// RemoveKeywords(words)
+	Punctuations(words)
 	ChangeA(words)
 	fmt.Println(words)
 	// man := os.WriteFile(args[1], manipulate, 0644)
@@ -94,7 +97,7 @@ func BintoInt(bin string) string {
 }
 
 func ChangeA(s []string) []string {
-	vowels := []string{"a", "e", "i", "o", "u", "h", "A", "E", "I", "O", "U"}
+	vowels := []string{"a", "e", "i", "o", "u", "h", "A", "E", "I", "O", "U", "H"}
 
 	for i, word := range s {
 		for _, letter := range vowels {
@@ -108,25 +111,32 @@ func ChangeA(s []string) []string {
 	return s
 }
 
-// func Times(s []string) []string {
-// 	keywords := []string{"(up,", "(low,", "(cap,"}
+func Punctuations(s []string) []string {
+	puncs := []string{",", ".", "!", "?", ":", ";"}
+	for i, word := range s {
+		for _, punc := range puncs {
+			if string(word[0]) == punc && (s[len(s)-1] != s[i]) {
+				s[i-1] += punc
+				s[i] = word[1:]
+			}
+			if (string(word[0]) == punc) && (s[len(s)-1] == s[i]) {
+				fmt.Println(s[len(s)-1])
+				s[i-1] += word
+				s = s[:len(s)-1]
+				fmt.Println(s)
+			}
+		}
+	}
+	return s
+}
 
-// 	for i, word := range s {
-// 		for _, keyword := range keywords {
-// 			if word == keyword {
-// 				a := strings.Trim(s[i+1], ")")
-// 				number, _ := strconv.Atoi(string(a))
-// 				for j := 1; j <= number; j++ {
-// 					if word == "(up," {
-// 						s[i-j] = strings.ToUpper(s[i-j])
-// 						s = append(s[:i], s[i+1:]...)
-// 					} else if word == "(low," {
-// 						s[i-j] = strings.ToLower(s[i-j])
-// 					} else if word == "(cap," {
-// 						s[i-j] = strings.Title(s[i-j])
-// 					}
+// func RemoveKeywords(s []string) []string {
+// 	keywords := []string{"(up)", "(low)"}
 
-// 				}
+// 	for _, keyword := range keywords {
+// 		for i, word := range s {
+// 			if keyword == word {
+// 				s = append(s[:i], s[i+1:]...)
 // 			}
 // 		}
 // 	}
