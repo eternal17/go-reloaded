@@ -75,9 +75,9 @@ func main() {
 		}
 	}
 	// RemoveKeywords(words)
-	Punctuations(words)
+	// Punctuations(words)
 	ChangeA(words)
-	fmt.Println(words)
+	fmt.Println(Punctuations(words))
 	// man := os.WriteFile(args[1], manipulate, 0644)
 	// if man != nil {
 	// 	log.Fatal(man)
@@ -120,10 +120,8 @@ func Punctuations(s []string) []string {
 				s[i] = word[1:]
 			}
 			if (string(word[0]) == punc) && (s[len(s)-1] == s[i]) {
-				fmt.Println(s[len(s)-1])
 				s[i-1] += word
 				s = s[:len(s)-1]
-				fmt.Println(s)
 			}
 		}
 	}
