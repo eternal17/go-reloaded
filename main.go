@@ -10,26 +10,12 @@ import (
 func main() {
 	args := os.Args[1:]
 
-	// error handling
-
-	// if len(args) < 1 {
-	// 	fmt.Println("Error, file name is missing")
-	// 	os.Exit(0)
-	// } else if len(args) == 1 {
-	// 	fmt.Println("Error, No file to write to")
-	// 	os.Exit(0)
-	// } else if len(args) > 2 {
-	// 	fmt.Println("Error, too many arguments")
-	// 	os.Exit(0)
-	// }
-
 	// reading first file
 
 	givenText, _ := os.ReadFile(args[0])
 
 	// array to push the words into
 	words := strings.Split(string(givenText), " ")
-	// loop over each word in array, satisfy conditions
 	for i, word := range words {
 		if word == "(up)" {
 			words[i-1] = strings.ToUpper(words[i-1])
@@ -71,18 +57,19 @@ func main() {
 				words[i-j] = strings.Title(words[i-j])
 			}
 			words = append(words[:i], words[i+2:]...)
-			// punctuations
 		}
 	}
 
-	// Punctuations(words)
 	ChangeA(words)
-	// fmt.Println(words)
-	fmt.Println(Punctuations(words))
-	// man := os.WriteFile(args[1], manipulate, 0644)
-	// if man != nil {
-	// 	log.Fatal(man)
-	// }
+
+	// join slice
+	needed := strings.Join(Punctuations(words), " ")
+
+	// write file, automatically updates manipulated file.
+	man := os.WriteFile(args[1], []byte(needed), 0644)
+	if man != nil {
+		panic(man)
+	}
 }
 
 // conv hex to int
