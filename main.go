@@ -53,30 +53,31 @@ func main() {
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
 				words[i-j] = strings.ToUpper(words[i-j])
-				words = append(words[:i], words[i+1:]...)
 			}
+			words = append(words[:i], words[i+2:]...)
 			// lower with number
 		} else if word == "(low," {
 			b := strings.Trim(string(words[i+1]), words[i+1][1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
 				words[i-j] = strings.ToLower(words[i-j])
-				words = append(words[:i], words[i+1:]...)
 			}
+			words = append(words[:i], words[i+2:]...)
 			// capitalize with num
 		} else if word == "(cap," {
 			b := strings.Trim(string(words[i+1]), words[i+1][1:])
 			number, _ := strconv.Atoi(string(b))
 			for j := 1; j <= number; j++ {
 				words[i-j] = strings.Title(words[i-j])
-				words = append(words[:i], words[i+1:]...)
 			}
+			words = append(words[:i], words[i+2:]...)
 			// punctuations
 		}
 	}
-	// RemoveKeywords(words)
+
 	// Punctuations(words)
 	ChangeA(words)
+	// fmt.Println(words)
 	fmt.Println(Punctuations(words))
 	// man := os.WriteFile(args[1], manipulate, 0644)
 	// if man != nil {
@@ -115,28 +116,17 @@ func Punctuations(s []string) []string {
 	puncs := []string{",", ".", "!", "?", ":", ";"}
 	for i, word := range s {
 		for _, punc := range puncs {
-			if string(word[0]) == punc && (s[len(s)-1] != s[i]) {
-				s[i-1] += punc
-				s[i] = word[1:]
-			}
 			if (string(word[0]) == punc) && (s[len(s)-1] == s[i]) {
 				s[i-1] += word
 				s = s[:len(s)-1]
+			} else if string(word[0]) == punc && string(word[len(word)-1]) != punc {
+				s[i-1] += punc
+				s[i] = word[1:]
+			} else if string(word[0]) == punc && string(word[len(word)-1]) == punc {
+				s[i-1] += word
+				s = append(s[:i], s[i+1:]...)
 			}
 		}
 	}
 	return s
 }
-
-// func RemoveKeywords(s []string) []string {
-// 	keywords := []string{"(up)", "(low)"}
-
-// 	for _, keyword := range keywords {
-// 		for i, word := range s {
-// 			if keyword == word {
-// 				s = append(s[:i], s[i+1:]...)
-// 			}
-// 		}
-// 	}
-// 	return s
-// }
